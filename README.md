@@ -8,15 +8,18 @@ Ensure you have Anaconda installed on your machine. If not, download it here:
 
 ## Installation Steps 🛠️
 
-1. **Install Anaconda**
+1. **Install C++ build tools**
+   [Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
+   - Make sure you install it and then add the "Desktop development with C++"
+
+2. **Install Anaconda**
    [Anaconda Download](https://www.anaconda.com/download/success)
    - Then launch the Anaconda Prompt by opening your start menu and looking for Anaconda Prompt
 
 3. **Create and Activate the Python Environment**
    ```bash
-   conda create -n detectron_env python=3.8 -y
+   conda create -n detectron_env python=3.8 git -y
    conda activate detectron_env
-   conda install git -y
    ```
 
 4. **Clone the Repository**
@@ -25,12 +28,17 @@ Ensure you have Anaconda installed on your machine. If not, download it here:
    cd object-detection
    ```
 
-5. **Install Dependencies**
+5. **Clone the detectron repository**
+   ```bash
+   git clone https://github.com/facebookresearch/detectron2.git
+   ```
+
+6. **Run the setup script**
    ```bash
    python setup.py
    ```
 
-6. **Download the Model Dataset**
+7. **Download the Model Dataset**
    - Go to the dataset page: [Model Dataset](https://universe.roboflow.com/navrachana-university-l5d92/car_models-izfw0/dataset/1)
    - Click "Download Dataset"
    - Choose "Download zip to computer" and select Format (COCO JSON)

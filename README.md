@@ -43,8 +43,13 @@ Ensure you have Anaconda installed on your machine. If not, download it here:
    - Click "Download Dataset"
    - Choose "Download zip to computer" and select Format (COCO JSON)
    - Copy the downloaded zip file to the folder containing `main.py`
+  
+8. **Move into the final working directory**
+   ```bash
+   cd detectron2
+   ```
 
-7. **Train the Model**
+9. **Train the Model**
    ```bash
    python main.py --train
    ```

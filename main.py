@@ -3,6 +3,7 @@ import sys
 import cv2
 import glob
 import json
+import torch
 import random
 import zipfile
 import argparse
@@ -17,12 +18,13 @@ os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
 
 class Detector:
     def __init__(self, roi_num_classes, roi_threshold_test, skip_frames=5):
+        device = "cuda" if torch.cuda.is_available() else "cpu"
         self.cfg = get_cfg()
         self.cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml"))
         self.cfg.MODEL.WEIGHTS = "output/model_final.pth"
         self.cfg.MODEL.ROI_HEADS.NUM_CLASSES = roi_num_classes
         self.cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = roi_threshold_test
-        self.cfg.MODEL.DEVICE = "cuda"
+        self.cfg.MODEL.DEVICE = device
         self.predictor = DefaultPredictor(self.cfg)
         self.metadata = MetadataCatalog.get("my_dataset_train")
         self.skip_frames = skip_frames
@@ -75,8 +77,11 @@ def visualize_training_data():
         cv2.imwrite(f"sample_image_{idx}.jpg", vis.get_image()[:, :, ::-1])
 
 def train_custom_detectron2(roi_num_classes):
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+
     cfg = get_cfg()
     cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml"))
+    cfg.MODEL.DEVICE = device  # Ensure cfg device is set correctly based on CUDA availability
     cfg.DATASETS.TRAIN = ("my_dataset_train",)
     cfg.DATASETS.TEST = ()
     cfg.DATALOADER.NUM_WORKERS = 2

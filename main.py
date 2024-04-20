@@ -7,6 +7,7 @@ import torch
 import random
 import zipfile
 import argparse
+import requests
 from detectron2 import model_zoo
 from detectron2.config import get_cfg
 from detectron2.data import MetadataCatalog, DatasetCatalog
@@ -63,6 +64,22 @@ class Detector:
         capture.release()
         cv2.destroyAllWindows()
 
+def ensure_config_file(sub_dir, cfg_filename, url):
+    cfg_dir_path = os.path.join("detectron2", "configs", sub_dir)
+    cfg_file_path = os.path.join(cfg_dir_path, cfg_filename)
+    os.makedirs(cfg_dir_path, exist_ok=True)  # Ensure the directory exists
+    if not os.path.exists(cfg_file_path):
+        print(f"{cfg_filename} not found locally, downloading now from {url}...")
+        response = requests.get(url)
+        if response.status_code == 200:
+            with open(cfg_file_path, 'wb') as f:
+                f.write(response.content)
+            print("Download completed")
+        else:
+            raise Exception(f"Failed to download {cfg_filename} from {url}")
+    else:
+        print(f"{cfg_filename} found locally....")
+
 def register_dataset(folder_name):
     register_coco_instances("my_dataset_train", {}, f"{folder_name}/train/_annotations.coco.json", f"{folder_name}/train")
     register_coco_instances("my_dataset_test", {}, f"{folder_name}/test/_annotations.coco.json", f"{folder_name}/test")
@@ -78,10 +95,17 @@ def visualize_training_data():
 
 def train_custom_detectron2(roi_num_classes):
     device = "cuda" if torch.cuda.is_available() else "cpu"
-
     cfg = get_cfg()
-    cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml"))
-    cfg.MODEL.DEVICE = device  # Ensure cfg device is set correctly based on CUDA availability
+
+    # Directly specify the configuration file path
+    config_file_path = os.path.join("detectron2", "configs", "COCO-Detection", "faster_rcnn_R_50_FPN_3x.yaml")
+    
+    if os.path.exists(config_file_path):
+        cfg.merge_from_file(config_file_path)
+    else:
+        raise FileNotFoundError(f"Configuration file not found at {config_file_path}")
+
+    cfg.MODEL.DEVICE = device
     cfg.DATASETS.TRAIN = ("my_dataset_train",)
     cfg.DATASETS.TEST = ()
     cfg.DATALOADER.NUM_WORKERS = 2
@@ -96,6 +120,7 @@ def train_custom_detectron2(roi_num_classes):
     trainer = DefaultTrainer(cfg)
     trainer.resume_or_load(resume=True)
     trainer.train()
+
 
 def clean_files():
     for file in glob.glob("README*"):
@@ -226,6 +251,10 @@ if __name__ == '__main__':
     # Sets the threshold for deciding whether detections are considered positive
     roi_threshold_test = 0.5
 
+    ensure_config_file("COCO-Detection", "faster_rcnn_R_50_FPN_3x.yaml",
+                       "https://raw.githubusercontent.com/facebookresearch/detectron2/main/configs/COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml")
+    ensure_config_file("", "Base-RCNN-FPN.yaml",
+                       "https://raw.githubusercontent.com/facebookresearch/detectron2/main/configs/Base-RCNN-FPN.yaml")
     try:
         if args.clean:
             clean_files()

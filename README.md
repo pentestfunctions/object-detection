@@ -5,15 +5,11 @@ This guide will help you set up the Object Detection project on your machine usi
 ## Prerequisites 📋
 
 Ensure you have Anaconda installed on your machine. If not, download it here:
-[Anaconda Download](https://www.anaconda.com/download/success)
 
 ## Installation Steps 🛠️
 
-1. **Clone the Repository**
-   ```bash
-   git clone https://github.com/pentestfunctions/object-detection.git
-   cd object-detection
-   ```
+1. **Install Anaconda**
+   [Anaconda Download](https://www.anaconda.com/download/success)
 
 2. **Create and Activate the Python Environment**
    ```bash
@@ -21,18 +17,24 @@ Ensure you have Anaconda installed on your machine. If not, download it here:
    conda activate detectron_env
    ```
 
-3. **Install Dependencies**
+3. **Clone the Repository**
+   ```bash
+   git clone https://github.com/pentestfunctions/object-detection.git
+   cd object-detection
+   ```
+
+4. **Install Dependencies**
    ```bash
    python setup.py
    ```
 
-4. **Download the Model Dataset**
+5. **Download the Model Dataset**
    - Go to the dataset page: [Model Dataset](https://universe.roboflow.com/navrachana-university-l5d92/car_models-izfw0/dataset/1)
    - Click "Download Dataset"
    - Choose "Download zip to computer" and select Format (COCO JSON)
    - Copy the downloaded zip file to the folder containing `main.py`
 
-5. **Train the Model**
+6. **Train the Model**
    ```bash
    python main.py --train
    ```

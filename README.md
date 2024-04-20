@@ -10,31 +10,32 @@ Ensure you have Anaconda installed on your machine. If not, download it here:
 
 1. **Install Anaconda**
    [Anaconda Download](https://www.anaconda.com/download/success)
+   - Then launch the Anaconda Prompt by opening your start menu and looking for Anaconda Prompt
 
-2. **Create and Activate the Python Environment**
+3. **Create and Activate the Python Environment**
    ```bash
    conda create -n detectron_env python=3.8
    conda activate detectron_env
    ```
 
-3. **Clone the Repository**
+4. **Clone the Repository**
    ```bash
    git clone https://github.com/pentestfunctions/object-detection.git
    cd object-detection
    ```
 
-4. **Install Dependencies**
+5. **Install Dependencies**
    ```bash
    python setup.py
    ```
 
-5. **Download the Model Dataset**
+6. **Download the Model Dataset**
    - Go to the dataset page: [Model Dataset](https://universe.roboflow.com/navrachana-university-l5d92/car_models-izfw0/dataset/1)
    - Click "Download Dataset"
    - Choose "Download zip to computer" and select Format (COCO JSON)
    - Copy the downloaded zip file to the folder containing `main.py`
 
-6. **Train the Model**
+7. **Train the Model**
    ```bash
    python main.py --train
    ```

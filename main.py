@@ -21,7 +21,7 @@ class Detector:
     def __init__(self, roi_num_classes, roi_threshold_test, skip_frames=5):
         device = "cuda" if torch.cuda.is_available() else "cpu"
         self.cfg = get_cfg()
-        self.cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml"))
+        self.cfg.merge_from_file("detectron2/configs/COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml")
         self.cfg.MODEL.WEIGHTS = "output/model_final.pth"
         self.cfg.MODEL.ROI_HEADS.NUM_CLASSES = roi_num_classes
         self.cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = roi_threshold_test

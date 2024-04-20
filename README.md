@@ -16,6 +16,7 @@ Ensure you have Anaconda installed on your machine. If not, download it here:
    ```bash
    conda create -n detectron_env python=3.8 -y
    conda activate detectron_env
+   conda install git -y
    ```
 
 4. **Clone the Repository**

@@ -47,8 +47,7 @@ def run_command(command, cwd=None):
     except subprocess.CalledProcessError as e:
         print(f"Error occurred: {e}")
 
-def clean_project():
-    # List of files and directories to be removed
+def clean_project(base_dir='detectron2'):
     files_and_dirs = [
         ".circleci", ".github", "build", "configs", "datasets", "demo",
         "detectron2.egg-info", "dev", "docker", "docs", "projects", "tests",
@@ -56,49 +55,41 @@ def clean_project():
         "INSTALL.md", "LICENSE", "MODEL_ZOO.md", "setup.cfg"
     ]
     
-    for item in files_and_dirs:
-        # Check if the item is a file or directory and exists
-        if os.path.isdir(item):
-            shutil.rmtree(item)  # Remove directories and their contents
-            print(f"Removed directory: {item}")
-        elif os.path.isfile(item):
-            os.remove(item)  # Remove files
-            print(f"Removed file: {item}")
+    full_paths = [os.path.join(base_dir, item) for item in files_and_dirs]
+    
+    for item_path in full_paths:
+        if os.path.isdir(item_path):
+            shutil.rmtree(item_path)
+            print(f"Removed directory: {item_path}")
+        elif os.path.isfile(item_path):
+            os.remove(item_path)
+            print(f"Removed file: {item_path}")
         else:
-            print(f"Item not found: {item}")
+            print(f"Item not found: {item_path}")
 
 def main():
-    # Install necessary libraries
     run_command('pip install cython')
 
-    # Fetch CUDA version
     cuda_version = get_cuda_version()
     if cuda_version:
-        # Proceed with the installation if CUDA is detected
         install_pytorch(cuda_version)
     else:
-        # Install CPU-only packages if CUDA is not detected
         install_cpu_only_packages()
 
-    # Path to the directory where detectron2 should be
     detectron_dir = os.path.join(os.getcwd(), 'detectron2')
     
     if not os.path.exists(detectron_dir):
-        # Clone detectron2 if the directory does not exist
         run_command('git clone https://github.com/facebookresearch/detectron2.git')
     
-    # Move main.py to the detectron2 directory
     main_py_path = os.path.join(os.getcwd(), 'main.py')
     detectron_dir_path = os.path.join(detectron_dir, 'main.py')
     if os.path.exists(main_py_path):
         shutil.move(main_py_path, detectron_dir_path)
         print(f"Moved main.py to {detectron_dir_path}")
 
-    # Install detectron2 in editable mode
     if os.path.exists(detectron_dir):
         run_command('pip install -e .', cwd=detectron_dir)
 
-    # Install opencv-python
     run_command('pip install opencv-python')
 
 if __name__ == "__main__":
